@@ -1,0 +1,13 @@
+@import './base.css';
+
+.body-wrapper {
+    @apply bg-gray-200;
+}
+
+.app-container {
+    @apply container max-w-7xl mx-auto py-4;
+}
+
+.layout-wrapper {
+    @apply h-screen p-4 bg-white shadow-md rounded flex flex-col;
+}
