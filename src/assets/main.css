@@ -9,5 +9,5 @@
 }
 
 .layout-wrapper {
-    @apply h-screen p-4 bg-white shadow-md rounded flex flex-col;
+    @apply p-4 bg-white shadow-md rounded flex flex-col;
 }

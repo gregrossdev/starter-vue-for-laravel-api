@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { csrfCookie, forgotPassword, resetPassword, login, register, logout, getUser } from "../http/auth-api";
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -15,74 +14,59 @@ export const useAuthStore = defineStore("auth", {
     },
     actions: {
         async getToken() {
-            await csrfCookie();
+            await axios.get("/sanctum/csrf-cookie");
         },
-        async fetchUser() {
+        async getUser() {
             await this.getToken();
-            const data = await getUser();
+            const data = await axios.get("/api/user");
             this.authUser = data.data;
         },
-        async handleLogin(credentials) {
+        async handleLogin(data) {
             this.authErrors = [];
             await this.getToken();
+
             try {
-                await login({
-                    email: credentials.email,
-                    password: credentials.password,
+                await axios.post("/login", {
+                    email: data.email,
+                    password: data.password,
                 });
-                // await axios.post("/login", {
-                //     email: data.email,
-                //     password: data.password,
-                // });
                 this.router.push("/");
-            }
-            catch (error) {
+            } catch (error) {
                 if (error.response.status === 422) {
                     this.authErrors = error.response.data.errors;
                 }
             }
         },
-        async handleRegister(user) {
+        async handleRegister(data) {
             this.authErrors = [];
             await this.getToken();
             try {
-                await register({
-                    name: user.name,
-                    email: user.email,
-                    password: user.password,
-                    password_confirmation: user.password_confirmation,
+                await axios.post("/register", {
+                    name: data.name,
+                    email: data.email,
+                    password: data.password,
+                    password_confirmation: data.password_confirmation,
                 });
-                // await axios.post("/register", {
-                //     name: data.name,
-                //     email: data.email,
-                //     password: data.password,
-                //     password_confirmation: data.password_confirmation,
-                // });
                 this.router.push("/");
-            }
-            catch (error) {
+            } catch (error) {
                 if (error.response.status === 422) {
                     this.authErrors = error.response.data.errors;
                 }
             }
         },
         async handleLogout() {
-            await logout();
+            await axios.post("/logout");
             this.authUser = null;
         },
         async handleForgotPassword(email) {
             this.authErrors = [];
             this.getToken();
             try {
-                const response = await forgotPassword({
+                const response = await axios.post("/forgot-password", {
                     email: email,
                 });
-                // const response = await axios.post("/forgot-password", {
-                //     email: email,
-                // });
                 this.authStatus = response.data.status;
-            }
-            catch (error) {
+            } catch (error) {
                 if (error.response.status === 422) {
                     this.authErrors = error.response.data.errors;
                 }
@@ -91,11 +75,9 @@ export const useAuthStore = defineStore("auth", {
         async handleResetPassword(resetData) {
             this.authErrors = [];
             try {
-                const response = await resetPassword(resetData);
-                // const response = await axios.post("/reset-password", resetData);
+                const response = await axios.post("/reset-password", resetData);
                 this.authStatus = response.data.status;
-            }
-            catch (error) {
+            } catch (error) {
                 if (error.response.status === 422) {
                     this.authErrors = error.response.data.errors;
                 }

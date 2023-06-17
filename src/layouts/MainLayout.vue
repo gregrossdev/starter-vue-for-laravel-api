@@ -6,10 +6,9 @@ import Footer from "./components/Footer.vue"
 <template>
   <div class="layout-wrapper">
     <Header/>
-    <main>
+    <main class="py-4 lg:py-8">
       <slot/>
     </main>
     <Footer/>
   </div>
 </template>
-

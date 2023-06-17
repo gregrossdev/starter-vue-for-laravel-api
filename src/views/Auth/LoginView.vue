@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
+import {ref} from "vue";
+import {useAuthStore} from "@/stores/auth";
 
 const authStore = useAuthStore();
 
@@ -10,13 +10,12 @@ const form = ref({
 });
 </script>
 <template>
-  <section class="bg-[#F4F7FF] py-20 lg:py-[120px]">
+  <section class="bg-[#F4F7FF] py-8">
     <div class="container mx-auto">
       <div class="-mx-4 flex flex-wrap">
         <div class="w-full px-4">
-          <div
-            class="
-              relative
+          <article
+              class="
               mx-auto
               max-w-[525px]
               overflow-hidden
@@ -29,15 +28,13 @@ const form = ref({
               md:px-[60px]
             "
           >
-            <div class="mb-10 text-center md:mb-16">Laraveller</div>
+            <h2 class="mb-10 text-xl font-bold text-center md:mb-16">Login</h2>
             <form @submit.prevent="authStore.handleLogin(form)">
               <div class="mb-6">
                 <input
-                  type="email"
-                  v-model="form.email"
-                  placeholder="Email"
-                  class="
-                    bordder-[#E9EDF4]
+                    v-model="form.email"
+                    class="
+                    border-[#E9EDF4]
                     w-full
                     rounded-md
                     border
@@ -50,19 +47,20 @@ const form = ref({
                     focus:border-primary
                     focus-visible:shadow-none
                   "
+                    placeholder="Email"
+                    type="email"
                 />
-                <div v-if="authStore.errors.email" class="flex">
+                <div v-if="authStore.errors.email"
+                     class="flex">
                   <span class="text-red-400 text-sm m-2 p-2">{{
-                    authStore.errors.email[0]
-                  }}</span>
+                      authStore.errors.email[0]
+                    }}</span>
                 </div>
               </div>
               <div class="mb-6">
                 <input
-                  type="password"
-                  v-model="form.password"
-                  placeholder="Password"
-                  class="
+                    v-model="form.password"
+                    class="
                     bordder-[#E9EDF4]
                     w-full
                     rounded-md
@@ -76,17 +74,19 @@ const form = ref({
                     focus:border-primary
                     focus-visible:shadow-none
                   "
+                    placeholder="Password"
+                    type="password"
                 />
-                <div v-if="authStore.errors.password" class="flex">
+                <div v-if="authStore.errors.password"
+                     class="flex">
                   <span class="text-red-400 text-sm m-2 p-2">{{
-                    authStore.errors.password[0]
-                  }}</span>
+                      authStore.errors.password[0]
+                    }}</span>
                 </div>
               </div>
               <div class="mb-10">
                 <button
-                  type="submit"
-                  class="
+                    class="
                     w-full
                     px-4
                     py-3
@@ -95,29 +95,31 @@ const form = ref({
                     rounded-md
                     text-white
                   "
+                    type="submit"
                 >
                   Login
                 </button>
               </div>
             </form>
-            <router-link
-              to="/forgot-password"
-              class="
+            <RouterLink
+                class="
                 mb-2
                 inline-block
                 text-base text-[#adadad]
                 hover:text-primary hover:underline
               "
+                to="/forgot-password"
             >
               Forgot Password?
-            </router-link>
+            </RouterLink>
             <p class="text-base text-[#adadad]">
               Not a member yet?
-              <router-link to="/register" class="text-primary hover:underline">
+              <RouterLink class="text-primary hover:underline"
+                          to="/register">
                 Sign Up
-              </router-link>
+              </RouterLink>
             </p>
-          </div>
+          </article>
         </div>
       </div>
     </div>
