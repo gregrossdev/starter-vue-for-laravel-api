@@ -5,7 +5,7 @@
 }
 
 .app-container {
-    @apply container max-w-7xl mx-auto py-4;
+    @apply container max-w-2xl mx-auto py-4;
 }
 
 .layout-wrapper {
