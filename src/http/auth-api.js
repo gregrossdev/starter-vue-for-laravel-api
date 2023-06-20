@@ -7,5 +7,5 @@ export const resetPassword = (resetData) => api.post("/reset-password", resetDat
 export const logout = () => api.post("/logout");
 
 
-export const getUser = () => api.get("/api/user");
+export const fetchUser = () => api.get("/api/user");
 export const csrfCookie = () => api.get("/sanctum/csrf-cookie");

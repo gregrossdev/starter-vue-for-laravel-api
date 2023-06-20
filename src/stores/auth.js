@@ -1,5 +1,6 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import axios from "axios";
+import {csrfCookie, fetchUser, forgotPassword, login, logout, register, resetPassword} from "../http/auth-api";
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -14,59 +15,66 @@ export const useAuthStore = defineStore("auth", {
     },
     actions: {
         async getToken() {
-            await axios.get("/sanctum/csrf-cookie");
+            await csrfCookie();
         },
         async getUser() {
             await this.getToken();
-            const data = await axios.get("/api/user");
+            const data = await fetchUser();
             this.authUser = data.data;
         },
-        async handleLogin(data) {
+        async handleLogin(user) {
             this.authErrors = [];
             await this.getToken();
 
             try {
-                await axios.post("/login", {
-                    email: data.email,
-                    password: data.password,
+                await login({
+                    email: user.email,
+                    password: user.password,
                 });
-                this.router.push("/");
-            } catch (error) {
-                if (error.response.status === 422) {
+                await this.router.push("/profile");
+            }
+            catch (error) {
+                if (error.response.status === 422)
                     this.authErrors = error.response.data.errors;
-                }
+
             }
         },
-        async handleRegister(data) {
+        async handleRegister(user) {
             this.authErrors = [];
             await this.getToken();
             try {
-                await axios.post("/register", {
-                    name: data.name,
-                    email: data.email,
-                    password: data.password,
-                    password_confirmation: data.password_confirmation,
+                await register({
+                    name: user.name,
+                    email: user.email,
+                    password: user.password,
+                    password_confirmation: user.password_confirmation,
                 });
-                this.router.push("/");
-            } catch (error) {
+                await this.router.push("/profile");
+            }
+            catch (error) {
                 if (error.response.status === 422) {
                     this.authErrors = error.response.data.errors;
                 }
             }
         },
         async handleLogout() {
-            await axios.post("/logout");
+            await logout();
             this.authUser = null;
+            await this.router.push("/");
         },
         async handleForgotPassword(email) {
             this.authErrors = [];
-            this.getToken();
+            await this.getToken();
             try {
-                const response = await axios.post("/forgot-password", {
+                const response = await forgotPassword({
                     email: email,
-                });
+                })
+                // const response = await axios.post("/forgot-password", {
+                //     email: email,
+                // });
                 this.authStatus = response.data.status;
-            } catch (error) {
+            }
+            catch (error) {
                 if (error.response.status === 422) {
                     this.authErrors = error.response.data.errors;
                 }
@@ -75,9 +83,11 @@ export const useAuthStore = defineStore("auth", {
         async handleResetPassword(resetData) {
             this.authErrors = [];
             try {
-                const response = await axios.post("/reset-password", resetData);
+                const response = await resetPassword(resetData);
+                // const response = await axios.post("/reset-password", resetData);
                 this.authStatus = response.data.status;
-            } catch (error) {
+            }
+            catch (error) {
                 if (error.response.status === 422) {
                     this.authErrors = error.response.data.errors;
                 }
