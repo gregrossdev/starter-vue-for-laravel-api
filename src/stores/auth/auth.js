@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import axios from "axios";
-import {csrfCookie, fetchUser, forgotPassword, login, logout, register, resetPassword} from "../http/auth-api";
+import {csrfCookie, fetchUser, forgotPassword, login, logout, register, resetPassword} from "../../http/auth-api.js";
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -14,17 +14,17 @@ export const useAuthStore = defineStore("auth", {
         status: (state) => state.authStatus,
     },
     actions: {
-        async getToken() {
+        async setAccessToken() {
             await csrfCookie();
         },
         async getUser() {
-            await this.getToken();
+            await this.setAccessToken();
             const data = await fetchUser();
             this.authUser = data.data;
         },
         async handleLogin(user) {
             this.authErrors = [];
-            await this.getToken();
+            await this.setAccessToken();
 
             try {
                 await login({
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore("auth", {
         },
         async handleRegister(user) {
             this.authErrors = [];
-            await this.getToken();
+            await this.setAccessToken();
             try {
                 await register({
                     name: user.name,
@@ -62,36 +62,32 @@ export const useAuthStore = defineStore("auth", {
             this.authUser = null;
             await this.router.push("/");
         },
-        async handleForgotPassword(email) {
-            this.authErrors = [];
-            await this.getToken();
-            try {
-                const response = await forgotPassword({
-                    email: email,
-                })
-                // const response = await axios.post("/forgot-password", {
-                //     email: email,
-                // });
-                this.authStatus = response.data.status;
-            }
-            catch (error) {
-                if (error.response.status === 422) {
-                    this.authErrors = error.response.data.errors;
-                }
-            }
-        },
-        async handleResetPassword(resetData) {
-            this.authErrors = [];
-            try {
-                const response = await resetPassword(resetData);
-                // const response = await axios.post("/reset-password", resetData);
-                this.authStatus = response.data.status;
-            }
-            catch (error) {
-                if (error.response.status === 422) {
-                    this.authErrors = error.response.data.errors;
-                }
-            }
-        },
+        // async handleForgotPassword(email) {
+        //     this.authErrors = [];
+        //     await this.setAccessToken();
+        //     try {
+        //         const response = await forgotPassword({
+        //             email: email,
+        //         })
+        //         this.authStatus = response.data.status;
+        //     }
+        //     catch (error) {
+        //         if (error.response.status === 422) {
+        //             this.authErrors = error.response.data.errors;
+        //         }
+        //     }
+        // },
+        // async handleResetPassword(resetData) {
+        //     this.authErrors = [];
+        //     try {
+        //         const response = await resetPassword(resetData);
+        //         this.authStatus = response.data.status;
+        //     }
+        //     catch (error) {
+        //         if (error.response.status === 422) {
+        //             this.authErrors = error.response.data.errors;
+        //         }
+        //     }
+        // },
     },
 });

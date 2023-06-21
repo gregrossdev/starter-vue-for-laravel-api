@@ -1,21 +1,21 @@
 <script setup>
 import { ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
+import {usePasswordStore} from "@/stores/auth/password.js";
 
-const authStore = useAuthStore();
+const passwordStore = usePasswordStore();
 const email = ref("");
 </script>
 <template>
   <form
     class="mx-auto max-w-md bg-slate-100 p-4 mt-12 rounded-lg"
-    @submit.prevent="authStore.handleForgotPassword(email)"
+    @submit.prevent="passwordStore.handleForgotPassword(email)"
   >
     <h3 class="font-bold">Forgot password</h3>
     <div
       class="m-2 p-2 text-green-900 font-semibold bg-green-300 rounded-md"
-      v-if="authStore.status"
+      v-if="passwordStore.status"
     >
-      {{ authStore.status }}
+      {{ passwordStore.status }}
     </div>
     <div class="my-6">
       <label
@@ -45,9 +45,10 @@ const email = ref("");
         "
         placeholder="email@laraveller.com"
       />
-      <div v-if="authStore.errors.email" class="flex">
+<!--      <ValidationError :errors="passwordStore.errors" field="email" />-->
+      <div v-if="passwordStore.errors.email" class="flex">
         <span class="text-red-400 text-sm m-2 p-2">{{
-          authStore.errors.email[0]
+          passwordStore.errors.email[0]
         }}</span>
       </div>
     </div>
